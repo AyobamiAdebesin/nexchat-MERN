@@ -17,19 +17,17 @@ dotenv.config();
 // Connect to database
 connectDB();
 
+// Use json data
+app.use(express.json());
+
 // Body parser
 app.get('/', (req, res) => {
     res.send('Hello World!')
 });
 
-app.get('/api/chat', (req, res) => {
-    res.send(chats);
-})
+// Use routes
+app.use('/api/users', userRouter);
 
-app.get('/api/chat/:id', (req, res) => {
-    const singleChat = chats.find((c) => c._id === req.params.id);
-    res.send(singleChat);
-})
 app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server started on port ${process.env.PORT || 5000}`.red.bold);
+    console.log(`Server started on port ${process.env.PORT || 5000}`);
 });
