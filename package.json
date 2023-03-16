@@ -1,0 +1,17 @@
+{
+  "name": "nexchat",
+  "version": "1.0.0",
+  "description": "A real time chat application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon backend/server.js"
+  },
+  "author": "Ayobami Adebesin",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.2",
+    "nodemon": "^2.0.21"
+  }
+}
