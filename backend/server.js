@@ -1,9 +1,14 @@
+/**
+ * @file server.js
+ * @description This file contains the server code for the chat application.
+ * Author: Ayobami Adebesin
+ */
 const express = require('express');
 const chats = require('./data/data');
 const dotenv = require('dotenv');
-const app = express()
+const app = express();
+const userRouter = require('./routes/userRouter');
 const connectDB = require('./config/db');
-const colors = require('colors');
 
 
 // Load env vars
