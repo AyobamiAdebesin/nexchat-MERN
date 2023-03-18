@@ -12,7 +12,7 @@ const userModel = mongoose.Schema(
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
-    isAdmin: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: false, required: true },
   },
   {
     timestamps: true,
