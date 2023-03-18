@@ -16,7 +16,7 @@ const generateToken = require("../config/generateToken");
 class userControllers {
   /**
    * @desc    Register a new user
-   * @route   POST "/"
+   * @route   POST "/api/users"
    * @access  Public
    * @param   {Object} req - The request object
    * @param   {Object} res - The response object
@@ -28,13 +28,13 @@ class userControllers {
   static async registerUser(req, res) {
     const { name, email, password, pic } = req.body;
     if (!name || !email || !password) {
-      res.status(400);
+      res.status(400).send("Please fill all fields");
       throw new Error("Please fill all fields");
     }
     const userExists = await User.findOne({ email });
     // Check if user exists
     if (userExists) {
-      res.status(400);
+      res.status(400).send("User already exists");
       throw new Error("User already exists");
     } else {
       // Create this user and save to db
@@ -65,7 +65,7 @@ class userControllers {
 
   /**
    * @desc    Authenticate user and get token
-   * @route   POST "/login"
+   * @route   POST "/api/users/login"
    * @access  Public
    * @param   {Object} req - The request object
    * @param   {Object} res - The response object
