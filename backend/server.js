@@ -9,9 +9,11 @@ const dotenv = require('dotenv');
 const app = express();
 const userRouter = require('./routes/userRouter');
 const connectDB = require('./config/db');
+const chatRouter = require('./routes/chatRouter');
 
-
-// Load env vars
+// Load env vars from .env file into process.env before we connect to the database
+// This is so that we can use the environment variables in the database connection
+// and also to start the server on the port specified in the .env file
 dotenv.config();
 
 // Connect to database
@@ -27,6 +29,7 @@ app.get('/', (req, res) => {
 
 // Use routes
 app.use('/api/users', userRouter);
+app.use('/api/chats', chatRouter);
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server started on port ${process.env.PORT || 5000}`);
