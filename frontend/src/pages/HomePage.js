@@ -11,10 +11,10 @@ const HomePage = () => {
       <Box
         d="flex"
         justifyContent={"center"}
-        p={3}
-        background="white"
+        p={2}
+        bgGradient='linear(to-l, #7928CA, #FF0080)'
         w="100%"
-        m="40px 0 15px 0"
+        m="30px 0 10px 0"
         borderRadius={"lg"}
         borderWidth="1px"
       >
@@ -22,7 +22,7 @@ const HomePage = () => {
           align={"center"}
           color={"black"}
           fontFamily="Work sans"
-          fontSize="5xl"
+          fontSize="4xl"
         >
           nexChat
         </Text>
@@ -30,7 +30,7 @@ const HomePage = () => {
       <Box
         d="flex"
         justifyContent={"center"}
-        p={4}
+        p={2}
         background="white"
         w="100%"
         borderRadius={"lg"}
