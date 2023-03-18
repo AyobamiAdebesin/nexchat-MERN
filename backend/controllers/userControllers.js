@@ -14,18 +14,18 @@ const User = require("../models/UserModel");
 const generateToken = require("../config/generateToken");
 
 class userControllers {
-  /**
-   * @desc    Register a new user
-   * @route   POST "/api/users"
-   * @access  Public
-   * @param   {Object} req - The request object
-   * @param   {Object} res - The response object
-   * @returns {Object} - Returns a json object with the user's id, name, email, and token
-   * @throws  {Error} - Throws an error if the user already exists
-   * @throws  {Error} - Throws an error if the user could not be created
-   * @throws  {Error} - Throws an error if the user's name, email, or password is not provided
-   */
   static async registerUser(req, res) {
+    /**
+     * @desc    Register a new user
+     * @route   POST "/api/users"
+     * @access  Public
+     * @param   {Object} req - The request object
+     * @param   {Object} res - The response object
+     * @returns {Object} - Returns a json object with the user's id, name, email, and token
+     * @throws  {Error} - Throws an error if the user already exists
+     * @throws  {Error} - Throws an error if the user could not be created
+     * @throws  {Error} - Throws an error if the user's name, email, or password is not provided
+     */
     const { name, email, password, pic } = req.body;
     if (!name || !email || !password) {
       res.status(400).send("Please fill all fields");
@@ -63,17 +63,17 @@ class userControllers {
     }
   }
 
-  /**
-   * @desc    Authenticate user and get token
-   * @route   POST "/api/users/login"
-   * @access  Public
-   * @param   {Object} req - The request object
-   * @param   {Object} res - The response object
-   * @returns {Object} - Returns a json object with the user's id, name, email, and token
-   * @throws  {Error} - Throws an error if the user's email or password is invalid
-   * @throws  {Error} - Throws an error if the user's email or password is not provided
-   */
   static async authUser(req, res) {
+    /**
+     * @desc    Authenticate user and get token
+     * @route   POST "/api/users/login"
+     * @access  Public
+     * @param   {Object} req - The request object
+     * @param   {Object} res - The response object
+     * @returns {Object} - Returns a json object with the user's id, name, email, and token
+     * @throws  {Error} - Throws an error if the user's email or password is invalid
+     * @throws  {Error} - Throws an error if the user's email or password is not provided
+     */
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
@@ -94,6 +94,30 @@ class userControllers {
       res.status(401).send("Invalid email or password");
       //throw new Error("Invalid email or password");
     }
+  }
+
+  // /api/users?search
+  static async getUsersWithKeyWord(req, res) {
+    /**
+     * @desc    Get all users
+     * @route   GET "/api/users"
+     * @access  Private/Admin
+     * @param   {Object} req - The request object
+     * @param   {Object} res - The response object
+     * @returns {Object} - Returns a json object with the users
+     * @throws  {Error} - Throws an error if the users could not be retrieved
+     */
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    res.send(users);
   }
 }
 
