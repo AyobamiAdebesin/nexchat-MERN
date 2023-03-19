@@ -99,7 +99,7 @@ class userControllers {
   // /api/users?search
   static async getUsersWithKeyWord(req, res) {
     /**
-     * @desc    Get all users
+     * @desc    Get all users with a search keyword
      * @route   GET "/api/users"
      * @access  Private/Admin
      * @param   {Object} req - The request object
