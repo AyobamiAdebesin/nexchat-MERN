@@ -57,7 +57,7 @@ class userControllers {
           token: generateToken(user._id),
         });
       } else {
-        res.status(400);
+        res.status(400).send("Failed to create user");
         throw new Error("Failed to create user");
       }
     }
@@ -79,7 +79,7 @@ class userControllers {
 
     if (!email || !password) {
       res.status(400).send("Please fill all fields");
-      //throw new Error("Please fill all fields");
+      throw new Error("Please fill all fields");
     }
 
     if (user && (await user.matchPassword(password))) {
@@ -92,7 +92,7 @@ class userControllers {
       });
     } else {
       res.status(401).send("Invalid email or password");
-      //throw new Error("Invalid email or password");
+      throw new Error("Invalid email or password");
     }
   }
 
