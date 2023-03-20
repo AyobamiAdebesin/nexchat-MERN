@@ -1,18 +1,29 @@
+/* eslint-disable no-unused-vars */
 import { TabPanels, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Box } from "@chakra-ui/react";
 import { Tabs, TabList, Tab, TabPanel } from "@chakra-ui/react";
 import SignIn from "../components/authentication/SignIn";
 import SignUp from "../components/authentication/SignUp";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  //Redirects to the chats page if the user is already logged in
+  const navigate = useNavigate();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+    if (user) {
+      navigate("/chats");
+    }
+  }, [navigate]);
+
   return (
     <Container maxW="xl" centerContent>
       <Box
         d="flex"
         justifyContent={"center"}
         p={2}
-        bgGradient='linear(to-l, #7928CA, #FF0080)'
+        bgGradient="linear(to-l, #7928CA, #FF0080)"
         w="100%"
         m="30px 0 10px 0"
         borderRadius={"lg"}
