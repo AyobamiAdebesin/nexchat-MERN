@@ -11,6 +11,7 @@ const protect = require("../middleware/authMiddleware");
 
 router.route("/").post(userControllers.registerUser);
 router.post("/login", userControllers.authUser);
+//router.post("/logout", userControllers.logoutUser);
 
 // We protect the endpoint with the middleware
 router.get("/", protect, userControllers.getUsersWithKeyWord);
