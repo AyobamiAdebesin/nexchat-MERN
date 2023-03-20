@@ -1,3 +1,12 @@
+/**
+ * This file contains the context provider for the chat app
+ * Author: Ayobami Adebesin
+ * @requires react
+ * @requires react-router-dom
+ * @exports ChatProvider
+ * @exports ChatState
+ * 
+ */
 const { createContext, useState, useEffect, useContext } = require("react");
 const { useNavigate } = require("react-router-dom");
 
