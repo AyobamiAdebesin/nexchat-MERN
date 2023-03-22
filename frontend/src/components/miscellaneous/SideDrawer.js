@@ -92,22 +92,25 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { chatData } = await axios.post(
+      console.log("Before fetching chats");
+      const { data } = await axios.post(
         "/api/chats",
         { userToChatWith },
         config
       );
-      if (!chats.find((c) => c._id === chatData._id)) {
-        setChats([chatData, ...chats]);
+      console.log("After fetching chats");
+      console.log(data);
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
       }
-      setSelectedChat(chatData);
+      setSelectedChat(data);
       setLoadingChat(false);
       onClose();
     } catch (error) {
       toast({
         title: "Error fetching chat",
         status: "error",
-        duration: 2000,
+        duration: 5000,
         position: "bottom-left",
         isClosable: true,
       });
