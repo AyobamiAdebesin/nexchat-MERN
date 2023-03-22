@@ -26,21 +26,21 @@ const ProfileModal = ({ user, children }) => {
       )}
       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent h="410px">
+        <ModalContent h="410px" >
           <ModalHeader
             fontSize="40px"
             fontFamily="Work sans"
-            d="flex"
-            justifyContent="center"
+            justifyContent={"flex-center"}
+            
           >
             {user.name}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
             d="flex"
-            flexDir="column"
+            flexDir="row"
             alignItems="center"
-            justifyContent="space-between"
+          justifyContent={"space-evenly"}
           >
             <Image
               borderRadius="full"
