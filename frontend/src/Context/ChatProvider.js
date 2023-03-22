@@ -5,16 +5,17 @@
  * @requires react-router-dom
  * @exports ChatProvider
  * @exports ChatState
- * 
+ *
  */
 const { createContext, useState, useEffect, useContext } = require("react");
 const { useNavigate } = require("react-router-dom");
-
 const ChatContext = createContext();
 const ChatProvider = ({ children }) => {
   // State variables
   const [user, setUser] = useState();
-  
+  const [selectedChat, setSelectedChat] = useState();
+  const [chats, setChats] = useState([]);
+
   const history = useNavigate();
   // A function to check if the user is logged in or not
   // If the user is not logged in, redirect to the home page
@@ -28,7 +29,9 @@ const ChatProvider = ({ children }) => {
     }
   }, [history]);
   return (
-    <ChatContext.Provider value={{ user, setUser }}>
+    <ChatContext.Provider
+      value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats }}
+    >
       {children}
     </ChatContext.Provider>
   );
