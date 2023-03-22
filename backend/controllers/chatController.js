@@ -34,7 +34,8 @@ const accessChat = asyncHandler(async (req, res) => {
   });
   // If such a chat exists, return it
   if (isChat.length > 0) {
-    res.status(200).json(isChat[0]);
+    return res.send(isChat[0]);
+    console.log("sending existing chat");
   } else {
     // If such a chat does not exist, create a new one
     var chatData = {
@@ -49,7 +50,8 @@ const accessChat = asyncHandler(async (req, res) => {
         "users",
         -"password"
       );
-      res.status(200).send(FullChat);
+      return res.status(200).json(FullChat);
+      console.log("sending new chat");
     } catch (error) {
       res.status(400).send(error.message);
       throw new Error(error.message);
