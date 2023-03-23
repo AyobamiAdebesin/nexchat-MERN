@@ -101,6 +101,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
   var users = req.body.users;
   const chatName = req.body.chatName;
 
+  // Check if the users array and the chat name are provided
   if (!users || !chatName) {
     return req.status(400).send({ message: "Please provide users and a name" });
   } else {
@@ -111,8 +112,10 @@ const createGroupChat = asyncHandler(async (req, res) => {
         .status(400)
         .send("More than 2 users are required to form a group chat");
     }
+    // Add the current user to the users array
     users.push(req.user);
 
+    // Create a new group chat
     try {
       const groupChat = await Chat.create({
         chatName: chatName,
@@ -121,6 +124,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
         groupAdmin: req.user,
       });
 
+      // Populate the users and groupAdmin fields of the group chat
       const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
         .populate("users")
         .populate("groupAdmin", "-password");
