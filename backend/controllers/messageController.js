@@ -20,10 +20,10 @@ const sendMessage = expressAsyncHandler(async (req, res) => {
   // Create and save the message to the database
   try {
     var message = await Message.create({
-        sender: sender,
-        content: content,
-        chat: chatId,
-      });
+      sender: sender,
+      content: content,
+      chat: chatId,
+    });
     message = await message.populate("sender", "name pic");
     message = await message.populate("chat");
     message = await User.populate(message, {
@@ -40,4 +40,17 @@ const sendMessage = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = sendMessage;
+const allMessages = expressAsyncHandler(async (req, res) => {
+  const chatId = req.params.chatId;
+
+  try {
+    const messages = await Message.find({ chat: chatId })
+      .populate("sender", "name pic email")
+      .populate("chat");
+    res.json(messages);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+module.exports = { sendMessage, allMessages };
