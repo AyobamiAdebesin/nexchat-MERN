@@ -10,6 +10,7 @@ const app = express();
 const userRouter = require('./routes/userRouter');
 const connectDB = require('./config/db');
 const chatRouter = require('./routes/chatRouter');
+const messageRouter = require('./routes/messageRouter');
 
 // Load env vars from .env file into process.env before we connect to the database
 // This is so that we can use the environment variables in the database connection
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 // Use routes
 app.use('/api/users', userRouter);
 app.use('/api/chats', chatRouter);
+app.use("/api/messages", messageRouter);
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server started on port ${process.env.PORT || 5000}`);
