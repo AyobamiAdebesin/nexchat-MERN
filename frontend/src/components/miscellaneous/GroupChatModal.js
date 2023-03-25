@@ -90,8 +90,7 @@ const GroupChatModal = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
-      const { data } = axios.post(
+      const { data } = await axios.post(
         "/api/chats/group",
         {
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
@@ -99,7 +98,7 @@ const GroupChatModal = ({ children }) => {
         },
         config
       );
-      setChats(chats.concat(data));
+      setChats([data, ...chats]);
       onClose();
       toast({
         title: "Group Chat Created!",
@@ -111,7 +110,7 @@ const GroupChatModal = ({ children }) => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: "Failed to create group chat",
+        description: error.response.data,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -134,7 +133,7 @@ const GroupChatModal = ({ children }) => {
   };
   const handleDelete = (usertoremove) => {
     setSelectedUsers(
-      selectedUsers.filter((user) => user._id !== usertoremove._id)
+      selectedUsers.filter((sel) => sel._id !== usertoremove._id)
     );
   };
   return (
