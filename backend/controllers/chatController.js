@@ -128,7 +128,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
       const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
         .populate("users")
         .populate("groupAdmin", "-password");
-      res.status(200).json(fullGroupChat);
+      return res.send(fullGroupChat);
     } catch (error) {
       res.status(400).send("Unable to create chat");
       throw new Error(error.message);
