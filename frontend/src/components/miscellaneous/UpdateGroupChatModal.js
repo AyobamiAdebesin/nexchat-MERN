@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import UserBadgeItem from "../UserAvatar/UserBadgeItem";
 import UserListItem from "../UserAvatar/UserListItem";
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { selectedChat, setSelectedChat, user } = ChatState();
   const [groupChatName, setGroupChatName] = useState("");
@@ -69,6 +69,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
       // Fetch again to update the chats
       setFetchAgain(!fetchAgain);
+      // Fetch messages to update the messages after a user has been removed
+      fetchMessages();
       // Stop loading
       setLoading(false);
     } catch (error) {
@@ -211,7 +213,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
           <ModalBody>
             <Flex>
               <Box
-                wwidth={"100%"}
+                width={"100%"}
                 display={"flex"}
                 flexWrap={"wrap"}
                 pb={"3}"}
