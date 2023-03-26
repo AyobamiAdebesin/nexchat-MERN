@@ -12,6 +12,7 @@ const ChatsBox = ({ fetchAgain, setFetchAgain }) => {
       flexDirection={"column"}
       p={3}
       bg="white"
+      bgGradient="linear(to-r, #7928CB, #FF0080)"
       w={{ base: "100%", md: "70%" }}
       borderRadius="lg"
       borderWidth="1px"
