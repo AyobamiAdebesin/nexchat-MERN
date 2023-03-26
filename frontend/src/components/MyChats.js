@@ -41,7 +41,7 @@ const MyChats = ({ fetchAgain }) => {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-  }, []);
+  }, [fetchAgain]);
   return (
     <>
       <Box
@@ -93,7 +93,7 @@ const MyChats = ({ fetchAgain }) => {
               {chats.map((chat) => (
                 <Box
                   onClick={() => setSelectedChat(chat)}
-                  bg={selectedChat === chat ? "gray.200" : "white"}
+                  bg={selectedChat === chat ? "green" : "white"}
                   color={selectedChat === chat ? "white" : "black"}
                   px={3}
                   py={2}
