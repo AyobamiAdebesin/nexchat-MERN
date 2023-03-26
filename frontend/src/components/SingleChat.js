@@ -152,9 +152,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 margin={"auto"}
               />
             ) : (
-              <Box display={"-ms-flexbox"}  w={"100%"} className="messages">
+              <div className="messages">
                 <ScrollableChat messages={messages}/>
-              </Box>
+              </div>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt={"1"}>
               <Input
