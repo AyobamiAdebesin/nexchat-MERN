@@ -13,7 +13,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { Box } from "@chakra-ui/layout";
+import { Box, Flex } from "@chakra-ui/layout";
 import axios from "axios";
 import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
@@ -28,10 +28,13 @@ const GroupChatModal = ({ children }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Toast
   const toast = useToast();
+
+  // Importing the chat state
   const { user, chats, setChats } = ChatState();
 
-  // Handles the search by making api call to the api/users?search endpoint
+  // Handles the user search by making api call to the api/users?search endpoint
   const handleSearch = async (value) => {
     setSearch(value);
 
@@ -62,6 +65,8 @@ const GroupChatModal = ({ children }) => {
       });
     }
   };
+
+  // Handles the group chat creation
   const handleSubmit = async () => {
     if (!groupChatName || !selectedUsers) {
       toast({
@@ -118,6 +123,8 @@ const GroupChatModal = ({ children }) => {
       });
     }
   };
+
+  // Adds the user to the selected users array
   const handleGroup = (usertoadd) => {
     if (selectedUsers.includes(usertoadd)) {
       toast({
@@ -131,6 +138,8 @@ const GroupChatModal = ({ children }) => {
     }
     setSelectedUsers([...selectedUsers, usertoadd]);
   };
+
+  // Removes the user from the selected users array
   const handleDelete = (usertoremove) => {
     setSelectedUsers(
       selectedUsers.filter((sel) => sel._id !== usertoremove._id)
@@ -156,7 +165,7 @@ const GroupChatModal = ({ children }) => {
           <ModalBody
             display={"flex"}
             flexDirection={"column"}
-            alignItems={"center"}
+            alignItems={"start"}
             pb={6}
           >
             <FormControl>
@@ -173,22 +182,27 @@ const GroupChatModal = ({ children }) => {
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </FormControl>
-            {selectedUsers.map((user) => (
-              <Box
-                key={user._id}
-                w={"20%"}
-                justifyContent={"space-between"}
-                alignItems={"baseline"}
-                display={"flex"}
-                flexDirection={"row"}
-              >
-                <UserBadgeItem
+            {/* This is where the selected users are displayed 
+            as we are typing in the search bar. We are making an api call to the api/users?search endpoint
+            */}
+            <Flex>
+              {selectedUsers.map((user) => (
+                <Box
                   key={user._id}
-                  user={user}
-                  handleFunction={() => handleDelete(user)}
-                />
-              </Box>
-            ))}
+                  w={"50%"}
+                  justifyContent={"space-evenly"}
+                  alignItems={"start"}
+                  display={"flex"}
+                  flexDirection={"row"}
+                >
+                  <UserBadgeItem
+                    key={user._id}
+                    user={user}
+                    handleFunction={() => handleDelete(user)}
+                  />
+                </Box>
+              ))}
+            </Flex>
 
             {loading ? (
               <div>loading...</div>
@@ -205,10 +219,12 @@ const GroupChatModal = ({ children }) => {
             )}
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="gray" mr={3} onClick={handleSubmit}>
+            <Button color="rebeccapurple" mr={3} onClick={handleSubmit}>
               Create Chat
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button color="red" onClick={onClose}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
