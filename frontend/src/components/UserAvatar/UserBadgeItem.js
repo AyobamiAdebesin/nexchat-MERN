@@ -10,8 +10,10 @@ const UserBadgeItem = ({ user, handleFunction }) => {
       borderRadius="lg"
       m={1}
       mb={2}
+      display="flex"
       variant="solid"
-      fontSize="10"
+      fontSize="13px"
+      flexDirection={"row"}
       backgroundColor={"purple"}
       color={"white"}
       cursor={"pointer"}
@@ -19,7 +21,7 @@ const UserBadgeItem = ({ user, handleFunction }) => {
       _hover={{ bg: "purple.100" }}
     >
       {user.name}
-      <CloseIcon pl={1} />
+      <CloseIcon marginLeft={1} pl={"1"} marginTop={1} />
     </Box>
   );
 };
