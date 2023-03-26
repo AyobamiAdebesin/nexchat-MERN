@@ -138,26 +138,31 @@ const createGroupChat = asyncHandler(async (req, res) => {
 
 const renameGroupChat = asyncHandler(async (req, res) => {
   const chatId = req.body.chatId;
-  const newChatName = req.body.newChatName;
+  const chatName = req.body.chatName;
 
-  const updatedChat = await Chat.findByIdAndUpdate(
-    chatId,
-    {
-      chatName: newChatName,
-    },
-    {
-      new: true,
-    }
-  )
-    .populate("users", "-password")
-    .populate("groupAdmin", "-password");
+  const updatedChat = await Chat.findById(chatId);
+  updatedChat.chatName = chatName;
+  await updatedChat.save();
+  res.send(updatedChat);
+  // const updatedChat = await Chat.findByIdAndUpdate(
+  //   chatId,
+  //   {
+  //     chatName: chatName,
+  //   },
+  //   {
+  //     new: true,
+  //   }
+  // )
+  //   .populate("users", "-password")
+  //   .populate("groupAdmin", "-password");
+  // console.log(updatedChat);
 
-  if (!updatedChat) {
-    res.status(400).send("Unable to update chat");
-    throw new Error("Unable to update chat");
-  } else {
-    res.status(200).json(updatedChat);
-  }
+  // if (updatedChat) {
+  //   return res.send(updatedChat);
+  // } else {
+  //   res.status(400).send("Unable to update chat");
+  //   throw new Error("Unable to update chat");
+  // }
 });
 
 const addUserToGroupChat = asyncHandler(async (req, res) => {
