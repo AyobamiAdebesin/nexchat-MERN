@@ -122,10 +122,11 @@ const SideDrawer = () => {
       <Box
         display={{ base: "none", md: "flex" }}
         justifyContent="space-between"
-        bg="white"
+        bgGradient="linear(to-l, #7928CA, #FF0080)"
         w="100%"
-        p="5px 10px 5px 10px"
+        
         borderWidth="5px"
+        borderRadius="lg"
       >
         <Tooltip label="Search users to chat" hasArrow placement="bottom-end">
           <Button variant={"ghost"} onClick={onOpen}>
