@@ -20,14 +20,42 @@ import { ChatState } from "../Context/ChatProvider";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import ScrollableChat from "./ScrollableChat";
+import io from "socket.io-client";
+
+const ENDPOINT = "http://localhost:5000";
+
+var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [display, setDisplay] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
   const { user, selectedChat, setSelectedChat } = ChatState();
   const toast = useToast();
+
+  // This useEffect is used to connect to the socket
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user); // Emitting a setup event to the socket
+    socket.on("connection", () => {
+      setSocketConnected(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    fetchMessages();
+    selectedChatCompare = selectedChat;
+  }, [selectedChat]);
+
   const sendMessage = async (e) => {
+    /**
+     * This function is used to send a message to the other user
+     * It is called when the user presses the enter key
+     * It is also called when the user clicks on the send button
+     * It will emit a newMessage event to the other user
+     */
     if (e.key === "Enter" && newMessage) {
       try {
         const config = {
@@ -36,14 +64,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             Authorization: `Bearer ${user.token}`,
           },
         };
+        // Clear the input field before making the api call
         setNewMessage("");
         const { data } = await axios.post(
           "/api/messages/",
           { content: newMessage, chatId: selectedChat._id },
           config
         );
-        console.log(data);
 
+        console.log(data);
+        socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -58,7 +88,26 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        // If the chat is not selected, then we will not add the message to the chat
+        // We will give a notification to the user
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
+
   const fetchMessages = async () => {
+    /**
+     * This function is used to fetch the messages of the selected chat
+     * It is called when the selected chat changes
+     * It will emit a join chat event to the other user
+     */
     if (!selectedChat) return;
 
     try {
@@ -76,6 +125,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       console.log(data);
       setMessages(data);
       setLoading(false);
+
+      // Emitting a join chat event to the socket using the chat id
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -88,12 +140,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  useEffect(() => {
-    fetchMessages();
-  }, [selectedChat]);
   const typingHandler = (e) => {
+    // This function is used to set the new message before sending it
     setNewMessage(e.target.value);
   };
+
   return (
     <>
       {selectedChat ? (
@@ -153,7 +204,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableChat messages={messages}/>
+                <ScrollableChat messages={messages} />
               </div>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt={"1"}>
