@@ -54,14 +54,19 @@ io.on("connection", (socket) => {
     socket.emit("connected");
   });
 
-  // This creates a new room with the second 
+  // This creates a new room with the second
   // user when the current logged in user clicks
   // on any of the chats
   socket.on("join chat", (room) => {
     socket.join(room);
     console.log("User joined Room: " + room);
-  })
+  });
 
+  // Socket for typing indicator
+  socket.on("typing", (room) => socket.in(room).emit("typing"));
+
+  // Socket for stop typing indicator
+  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
   // This is used to send a message to the other user
   // when the current logged in user sends a message
@@ -71,9 +76,14 @@ io.on("connection", (socket) => {
 
     if (!chat.users) return console.log("Chat users not defined");
 
-    chat.users.forEach(user => {
+    chat.users.forEach((user) => {
       if (user._id == newMessageReceived.sender._id) return;
       socket.in(user._id).emit("message received", newMessageReceived);
     });
-  })
+  });
+
+  socket.off("setup", () => {
+    console.log("Disconnected from Socket IO");
+    socket.leave(userData._id);
+  });
 });
