@@ -22,6 +22,7 @@ import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import animationData from "../animations/typing-animation.json";
 
+// This is the endpoint for the socket in the backend
 const ENDPOINT = "http://localhost:5000";
 
 var socket, selectedChatCompare;
@@ -33,7 +34,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    notifications,
+    setNotifications,
+  } = ChatState();
   const toast = useToast();
 
   const defaultOptions = {
@@ -91,8 +98,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           { content: newMessage, chatId: selectedChat._id },
           config
         );
-
-        console.log(data);
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
@@ -107,6 +112,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
+  console.log(notifications);
 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
@@ -114,8 +120,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
-        // If the chat is not selected, then we will not add the message to the chat
+        // If no chat is selected, then we will not add the message to the chat
         // We will give a notification to the user
+
+        // If the chat is not already in the notifications array, then we will add it to the notifications array
+        if (!notifications.includes(newMessageReceived)) {
+          setNotifications([newMessageReceived, ...notifications]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
@@ -142,7 +154,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         `/api/messages/${selectedChat._id}`,
         config
       );
-      console.log(data);
       setMessages(data);
       setLoading(false);
 
