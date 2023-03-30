@@ -13,6 +13,7 @@ const ChatContext = createContext();
 const ChatProvider = ({ children }) => {
   // State variables
   const [user, setUser] = useState();
+  const [notifications, setNotifications] = useState([]);
   const [selectedChat, setSelectedChat] = useState();
   const [chats, setChats] = useState([]);
 
@@ -29,8 +30,20 @@ const ChatProvider = ({ children }) => {
     }
   }, [history]);
   return (
+    // This is the provider that will be used in the app
+    // The value prop is the state variables and the functions
+    // that will be used in the app.
     <ChatContext.Provider
-      value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats }}
+      value={{
+        user,
+        setUser,
+        selectedChat,
+        setSelectedChat,
+        chats,
+        setChats,
+        notifications,
+        setNotifications,
+      }}
     >
       {children}
     </ChatContext.Provider>
