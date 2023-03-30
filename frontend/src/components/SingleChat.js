@@ -1,18 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Flex,
   FormControl,
   IconButton,
   Input,
   Spinner,
   Text,
-  Toast,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
+import Lottie, { LottiePlayer } from "lottie-react";
 import "./styles.css";
 import React, { useEffect, useState } from "react";
 import { getSender, getFullSender } from "../config/ChatLogic";
@@ -21,6 +20,7 @@ import ProfileModal from "./miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
+import animationData from "../animations/typing-animation.json";
 
 const ENDPOINT = "http://localhost:5000";
 
@@ -30,17 +30,37 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
-  const [display, setDisplay] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const { user, selectedChat, setSelectedChat } = ChatState();
   const toast = useToast();
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   // This useEffect is used to connect to the socket
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user); // Emitting a setup event to the socket
-    socket.on("connection", () => {
+    socket.on("connected", () => {
       setSocketConnected(true);
+    });
+
+    // Socket for emitting a typing event
+    socket.on("typing", () => {
+      setIsTyping(true);
+    });
+
+    // Socket for emitting a stop typing event
+    socket.on("stop typing", () => {
+      setIsTyping(false);
     });
   }, []);
 
@@ -143,6 +163,28 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const typingHandler = (e) => {
     // This function is used to set the new message before sending it
     setNewMessage(e.target.value);
+
+    // If the user is not connected to the socket, then we will not emit any events
+    if (!socketConnected) return;
+
+    // If the user is typing, then we will emit a typing event to the other user
+    if (!typing) {
+      socket.emit("typing", selectedChat._id);
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
 
   return (
@@ -208,6 +250,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </div>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt={"1"}>
+              {isTyping ? (
+                <Box width={20} height={9} marginBottom={15} marginLeft={0}>
+                  <Lottie
+                    options={defaultOptions}
+                    style={{}}
+                    animationData={animationData}
+                  />
+                </Box>
+              ) : (
+                <></>
+              )}
               <Input
                 placeholder="Enter your message"
                 variant="filled"
