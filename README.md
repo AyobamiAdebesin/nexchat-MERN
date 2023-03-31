@@ -46,7 +46,6 @@ You can view the application on your localhost by visiting
 ```
 in your browser.
 
-```
 
 ### Compiles and minifies for production
 ```
@@ -59,4 +58,4 @@ npm run lint
 ```
 
 ### Screenshots
-![Example screenshot](./frontend/public/nexchat-demo.png)
+![Example screenshots](./frontend/public/nexChat.png)
