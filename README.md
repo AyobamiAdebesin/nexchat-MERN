@@ -58,4 +58,4 @@ npm run lint
 ```
 
 ### Screenshots
-![Example screenshots](./frontend/public/nexChat.png)
+![Example screenshots](./frontend/public/nexchat-demo.png)
