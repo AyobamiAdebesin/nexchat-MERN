@@ -11,6 +11,7 @@ const userRouter = require("./routes/userRouter");
 const connectDB = require("./config/db");
 const chatRouter = require("./routes/chatRouter");
 const messageRouter = require("./routes/messageRouter");
+const path = require("path");
 
 // Load env vars from .env file into process.env before we connect to the database
 // This is so that we can use the environment variables in the database connection
@@ -23,15 +24,26 @@ connectDB();
 // Use json data
 app.use(express.json());
 
-// Body parser
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
 // Use routes
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
 app.use("/api/messages", messageRouter);
+
+const __dirname1 = path.resolve();
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname1, "/frontend/build")));
+
+  // Get all the contents of the frontend build folder
+  // and send it as a response to the request
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
+  });
+} else {
+  // Body parser
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
+  });
+}
 
 const server = app.listen(process.env.PORT || 5000, () => {
   console.log(`Server started on port ${process.env.PORT || 5000}`);
